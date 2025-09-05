@@ -1,66 +1,105 @@
-# 📦 Hotel Booking API Automation Framework
+# Hotel Booking API Test Automation Framework
 
-A Robust **API testing framework** powered by **Java**, **Serenity BDD**, and **REST Assured**, delivering
-comprehensive test coverage with detailed HTML reporting, advanced logging capabilities, and seamless CI/CD integration.
-Experience clarity in test execution with rich visualizations and actionable insights.
+A BDD-based API testing framework for hotel booking system, built with Serenity BDD and REST Assured, providing comprehensive test coverage with detailed reporting.
 
-## Implementation Status
+## Prerequisites
 
-### Technology Stack
 - Java 17
 - Maven 3.9.6+
-- Serenity BDD 4.1.0
-- Cucumber 7.15.0
-- REST Assured 5.4.0
-- JSON Schema Validator
-- Lombok for reducing boilerplate
-- SLF4J with Logback for logging
+- Git
 
-### Current Progress
+## Framework Components
 
-#### Project Setup and Configuration
-- [x] Project setup with core dependencies
+### Core Technologies
+- Serenity BDD 4.1.0 (Test Automation Framework)
+- Cucumber 7.15.0 (BDD Implementation)
+- REST Assured 5.4.0 (API Testing)
+- Lombok (Reducing Boilerplate)
+- SLF4J with Logback (Logging)
 
-#### Core Framework Implementation
-- [x] Establish reusable test utilities, POJO classes, Property and configuration management
+### Key Features
+- BDD-style test scenarios
+- Detailed HTML test reports
+- Request/Response logging
+- JSON Schema validation
+- Environment configuration management
+- Reusable API utilities
 
-#### Feature Implementation
-Authentication, Create, Retrieve, Update, Delete Booking
-- [x] Feature file creation
-- [x] Step definitions implementation
-- [x] Validation for successful booking
-- [ ] Negative scenarios
+## Project Structure
 
-#### Documentation and Maintenance
-- [ ] Comprehensive README documentation
-- [ ] Code comments and documentation
-- [ ] Code refactoring and optimization
+```
+src/test/
+├── java/
+│   └── com/booking/
+│       ├── enums/         # API endpoints
+│       ├── pojo/          # Request/Response objects
+│       ├── stepdefs/      # Step definitions
+│       └── utils/         # Helper classes
+└── resources/
+    ├── features/          # Cucumber feature files
+    ├── schemas/           # JSON schemas
+    ├── config.properties  # Configuration
+    └── serenity.conf     # Serenity settings
+```
 
-
-## Test Execution Guide
+## Test Execution
 
 ### Running All Tests
 ```bash
 mvn clean verify
 ```
 
-### Tag-Based Execution
-Execute specific test categories using tags:
-
+### Running Specific Test Categories
 ```bash
-# Run smoke tests
+# Smoke Tests
 mvn clean verify -Dcucumber.filter.tags="@smoke"
 
+# Positive Tests
+mvn clean verify -Dcucumber.filter.tags="@positive"
+
+# Negative Tests
+mvn clean verify -Dcucumber.filter.tags="@negative"
+
+# Specific Feature
+mvn clean verify -Dcucumber.filter.tags="@booking and @create"
 ```
-### Test Reports
-Serenity generates detailed HTML reports after execution:
+
+### Available Tags
+- `@smoke`: Critical path tests
+- `@positive`: Happy path scenarios
+- `@negative`: Error scenarios
+- `@booking`: All booking related tests
+- `@authentication`: Authentication tests
+
+## Test Reports & Logs
+
+### Serenity Reports
+HTML reports are generated at:
 ```
 target/site/serenity/index.html
 ```
-#### Log File Location
+
+### Log Files
 ```
 target/logs/
-├── test-execution.log
-└── api-requests.log
-
+├── test-execution.log  # Test execution logs
+└── api-requests.log    # API request/response logs
 ```
+
+## Configuration
+
+Key configurations are managed through:
+- `src/test/resources/config.properties`: API endpoints and test data
+- `src/test/resources/serenity.conf`: Serenity framework settings
+- `src/test/resources/logback.xml`: Logging configuration
+
+## Features Covered
+
+- Authentication (Login/Logout)
+- Booking Management
+  - Create Booking
+  - Retrieve Booking
+  - Update Booking
+  - Delete Booking
+- Schema Validation
+- Error Scenarios
