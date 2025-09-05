@@ -9,7 +9,9 @@ public enum BookingEndpoint {
     CREATE_BOOKING("/booking"),
     GET_BOOKING("/booking/{0}"),
     UPDATE_BOOKING("/booking/{0}"),
-    DELETE_BOOKING("/booking/{0}");
+    DELETE_BOOKING("/booking/{0}"),
+    GET_BOOKING_SUMMARY("/booking/summary"),
+    GET_UNAVAILABLE_DATES("/booking/unavailable");
 
     private final String path;
     private static final String BASE_URL = ConfigurationUtil.getProperty("api.base.url");
