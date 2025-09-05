@@ -3,7 +3,7 @@
     import com.booking.utils.ApiUtils;
     import com.booking.utils.ConfigurationUtil;
     import com.booking.utils.LoggerUtil;
-    import com.booking.context.TestContext;
+    import com.booking.utils.TestContext;
     import io.cucumber.java.After;
     import io.cucumber.java.AfterAll;
     import io.cucumber.java.Before;

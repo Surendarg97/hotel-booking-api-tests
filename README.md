@@ -26,7 +26,7 @@ Experience clarity in test execution with rich visualizations and actionable ins
 
 #### Feature Implementation
 Authentication, Create, Retrieve, Update, Delete Booking
-- [ ] Feature file creation
+- [x] Feature file creation
 - [ ] Step definitions implementation
 - [ ] Validation for successful booking
 - [ ] Negative scenarios
@@ -35,3 +35,32 @@ Authentication, Create, Retrieve, Update, Delete Booking
 - [ ] Comprehensive README documentation
 - [ ] Code comments and documentation
 - [ ] Code refactoring and optimization
+
+
+## Test Execution Guide
+
+### Running All Tests
+```bash
+mvn clean verify
+```
+
+### Tag-Based Execution
+Execute specific test categories using tags:
+
+```bash
+# Run smoke tests
+mvn clean verify -Dcucumber.filter.tags="@smoke"
+
+```
+### Test Reports
+Serenity generates detailed HTML reports after execution:
+```
+target/site/serenity/index.html
+```
+#### Log File Location
+```
+target/logs/
+├── test-execution.log
+└── api-requests.log
+
+```
