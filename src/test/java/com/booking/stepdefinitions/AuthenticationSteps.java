@@ -65,6 +65,20 @@ public class AuthenticationSteps {
         Assert.assertEquals(200, lastResponse().getStatusCode());
     }
 
+    @Given("I have an invalid authentication token")
+    public void iHaveAnInvalidAuthenticationToken() {
+        logger.info("Setting up an invalid authentication token");
+        testContext.setAuthToken("invalid-token-12345");
+        logger.debug("Set invalid authentication token in context");
+    }
+
+    @Given("I have no active authentication token")
+    public void iHaveNoActiveAuthenticationToken() {
+        logger.info("Ensuring no active authentication token is present");
+        testContext.setAuthToken(null);
+        logger.debug("Authentication token has been cleared from context");
+    }
+
 
     @When("I send a validate token request")
     public void iSendAValidateTokenRequest() {

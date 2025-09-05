@@ -1,4 +1,4 @@
-@authentication
+@authenticationfeature
 Feature: Authentication API Endpoints
   As a user of the booking system
   I want to manage authentication
@@ -31,3 +31,39 @@ Feature: Authentication API Endpoints
     When I send a logout request
     Then the response status code should be 200
     And the token should be invalidated
+
+  @login @negative
+  Scenario Outline: User login with invalid credentials
+    When I send a login request with username "<username>" and password "<password>"
+    Then the response status code should be 401
+
+    Examples:
+      | username | password |
+      | invalid  | wrong    |
+      | admin    | wrong    |
+      | invalid  | password |
+
+  @validate @negative
+  Scenario: Validate an invalid authentication token
+    Given I have an invalid authentication token
+    When I send a validate token request
+    Then the response status code should be 403
+
+  @logout @negative
+  Scenario: Attempt to logout with invalid token
+    Given I have an invalid authentication token
+    When I send a logout request
+    Then the response status code should be 403
+
+  @regression
+  Scenario: Complete authentication flow
+    Given I have no active authentication token
+    When I send a login request with username "admin" and password "password"
+    Then the response status code should be 200
+    And the response should contain a valid token
+    When I send a validate token request
+    Then the response status code should be 200
+    When I send a logout request
+    Then the response status code should be 200
+    When I send a validate token request
+    Then the response status code should be 403
