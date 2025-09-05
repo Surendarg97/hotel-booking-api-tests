@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import com.booking.utils.LoggerUtil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Map;
 import java.util.List;
@@ -21,25 +22,45 @@ public class UpdateBookingSteps {
     private static final Logger logger = LoggerUtil.getLogger(UpdateBookingSteps.class);
     private final TestContext testContext = TestContext.getInstance();
 
+    @When("I update booking with ID {int} with the following details:")
+    public void iUpdateBookingWithIdWithTheFollowingDetails(int bookingId, DataTable dataTable) {
+        updateBookingWithDetails(bookingId, dataTable, true);
+    }
+
     @When("I update the booking with the following details:")
     public void iUpdateTheBookingWithTheFollowingDetails(DataTable dataTable) {
-        List<Map<String, String>> bookingData = dataTable.asMaps(String.class, String.class);
-        Map<String, String> booking = bookingData.get(0);
+        updateBookingWithDetails(testContext.getLastBookingId(), dataTable, true);
+    }
 
-        BookingDates dates = BookingDates.builder()
-            .checkin(booking.get("checkin"))
-            .checkout(booking.get("checkout"))
-            .build();
+    @When("I update the booking with missing mandatory fields:")
+    public void iUpdateTheBookingWithMissingMandatoryFields(DataTable dataTable) {
+        updateBookingWithDetails(testContext.getLastBookingId(), dataTable, false);
+    }
 
-        BookingRequest request = BookingRequest.builder()
-            .roomid(Integer.parseInt(booking.get("roomid")))
-            .firstname(booking.get("firstname"))
-            .lastname(booking.get("lastname"))
-            .depositpaid(Boolean.parseBoolean(booking.get("depositpaid")))
-            .email(booking.get("email"))
-            .phone(booking.get("phone"))
-            .bookingdates(dates)
-            .build();
+    private void updateBookingWithDetails(int bookingId, DataTable dataTable, boolean includeAllFields) {
+        List<Map<String, String>> data = dataTable.asMaps(String.class, String.class);
+        Map<String, String> bookingDetails = data.get(0);
+
+        BookingRequest.BookingRequestBuilder requestBuilder = BookingRequest.builder()
+            .roomid(Integer.parseInt(bookingDetails.get("roomid")))
+            .firstname(bookingDetails.get("firstname"))
+            .lastname(bookingDetails.get("lastname"))
+            .email(bookingDetails.get("email"))
+            .phone(bookingDetails.get("phone"));
+
+        if (includeAllFields) {
+            BookingDates dates = BookingDates.builder()
+                .checkin(bookingDetails.get("checkin"))
+                .checkout(bookingDetails.get("checkout"))
+                .build();
+
+            requestBuilder
+                .depositpaid(Boolean.parseBoolean(bookingDetails.get("depositpaid")))
+                .bookingdates(dates);
+        }
+
+        BookingRequest request = requestBuilder.build();
+        logger.info("Updating booking ID {} with new details", bookingId);
 
         SerenityRest
             .given()
@@ -47,7 +68,7 @@ public class UpdateBookingSteps {
             .contentType("application/json")
             .body(request)
             .when()
-            .put(BookingEndpoint.UPDATE_BOOKING.getUrl(), testContext.getLastBookingId());
+            .put(BookingEndpoint.UPDATE_BOOKING.getUrl(), bookingId);
 
         testContext.setLastRequest(request);
         logger.debug("Update booking request sent");
@@ -73,6 +94,24 @@ public class UpdateBookingSteps {
         } else {
             logger.error("Failed to update booking. Status code: {}", SerenityRest.lastResponse().getStatusCode());
             fail("Update booking request failed with status code: " + SerenityRest.lastResponse().getStatusCode());
+        }
+    }
+
+    @Then("the response should contain missing parameter message")
+    public void theResponseShouldContainMissingParameterMessage() {
+        String responseBody = SerenityRest.lastResponse().getBody().asString();
+        logger.debug("Response body for missing parameters: {}", responseBody);
+        
+        if (SerenityRest.lastResponse().getStatusCode() == 400) {
+            // Verify the error message indicates missing parameters
+            assertTrue("Response should contain 'missing parameter' message", 
+                responseBody.toLowerCase().contains("missing") || 
+                responseBody.toLowerCase().contains("required") ||
+                responseBody.toLowerCase().contains("mandatory"));
+            logger.info("Successfully validated missing parameter message");
+        } else {
+            logger.error("Expected 400 status code but got: {}", SerenityRest.lastResponse().getStatusCode());
+            fail("Expected 400 status code for missing mandatory parameters");
         }
     }
 }
