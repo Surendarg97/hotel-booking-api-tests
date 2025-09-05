@@ -6,7 +6,10 @@ import com.booking.utils.ConfigurationUtil;
  * Enum for Booking related endpoints
  */
 public enum BookingEndpoint {
-    CREATE_BOOKING("/booking");
+    CREATE_BOOKING("/booking"),
+    GET_BOOKING("/booking/{0}"),
+    UPDATE_BOOKING("/booking/{0}"),
+    DELETE_BOOKING("/booking/{0}");
 
     private final String path;
     private static final String BASE_URL = ConfigurationUtil.getProperty("api.base.url");
