@@ -22,10 +22,10 @@ Experience clarity in test execution with rich visualizations and actionable ins
 - [x] Project setup with core dependencies
 
 #### Core Framework Implementation
-- [ ] Establish reusable test utilities, POJO classes, Property and configuration management
+- [x] Establish reusable test utilities, POJO classes, Property and configuration management
 
 #### Feature Implementation
-Create, Retrieve, Update, Delete Booking
+Authentication, Create, Retrieve, Update, Delete Booking
 - [ ] Feature file creation
 - [ ] Step definitions implementation
 - [ ] Validation for successful booking
