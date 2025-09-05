@@ -6,6 +6,7 @@ import com.booking.utils.ApiUtils;
 import com.booking.enums.BookingEndpoint;
 import com.booking.enums.AuthEndpoint;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.When;
 import net.serenitybdd.rest.SerenityRest;
 import org.slf4j.Logger;
 import com.booking.utils.LoggerUtil;
@@ -17,6 +18,8 @@ public class CommonSteps {
     private final TestContext testContext = TestContext.getInstance();
 
     @Given("I fetch a booking for room {int}")
+    @Given("a booking exists is available for room {int}")
+    @When("I retrieve the booking details with room id {int}")
     public void iFetchABookingForRoom(int roomId) {
         logger.info("Fetching booking details for room ID: {}", roomId);
         
