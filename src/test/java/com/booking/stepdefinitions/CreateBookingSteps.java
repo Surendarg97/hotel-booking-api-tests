@@ -41,16 +41,21 @@ public class CreateBookingSteps {
             .checkout(booking.get("checkout"))
             .build();
 
-        BookingRequest request = BookingRequest.builder()
+        BookingRequest.BookingRequestBuilder requestBuilder = BookingRequest.builder()
             .roomid(Integer.parseInt(booking.get("roomid")))
-            .bookingid(Integer.parseInt(booking.get("bookingid")))
             .firstname(booking.get("firstname"))
             .lastname(booking.get("lastname"))
             .email(booking.get("email"))
             .phone(booking.get("phone"))
             .depositpaid(Boolean.parseBoolean(booking.get("depositpaid")))
-            .bookingdates(dates)
-            .build();
+            .bookingdates(dates);
+
+        // Add bookingId only if it's present in the data
+        if (booking.containsKey("bookingid") && booking.get("bookingid") != null) {
+            requestBuilder.bookingid(Integer.parseInt(booking.get("bookingid")));
+        }
+
+        BookingRequest request = requestBuilder.build();
 
         logger.info("Creating booking for {} {}", request.getFirstname(), request.getLastname());
         testContext.setLastRequest(request);
@@ -85,5 +90,17 @@ public class CreateBookingSteps {
         
         testContext.setLastBookingId(response.getBookingid());
         logger.info("Created booking with ID: {}", response.getBookingid());
+    }
+
+    @Then("the response should contain the validation error {string}")
+    public void theResponseShouldContainTheValidationError(String expectedError) {
+        String responseBody = lastResponse().getBody().asString();
+        logger.debug("Validation error response: {}", responseBody);
+        
+        Assert.assertTrue(
+            String.format("Response should contain validation error: %s", expectedError),
+            responseBody.contains(expectedError)
+        );
+        logger.info("Successfully validated error message: {}", expectedError);
     }
 }
