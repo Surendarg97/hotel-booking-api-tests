@@ -1,6 +1,5 @@
-package com.booking.context;
+package com.booking.utils;
 
-import com.booking.utils.LoggerUtil;
 import org.slf4j.Logger;
 
 /**
