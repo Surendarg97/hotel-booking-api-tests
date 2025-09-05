@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import com.booking.utils.LoggerUtil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
@@ -138,6 +139,23 @@ public class GetBookingSteps {
         } else {
             logger.error("Failed to get unavailable dates. Status code: {}", SerenityRest.lastResponse().getStatusCode());
             fail("Get unavailable dates request failed with status code: " + SerenityRest.lastResponse().getStatusCode());
+        }
+    }
+
+    @Then("the response should contain booking not found message")
+    public void theResponseShouldContainBookingNotFoundMessage() {
+        String responseBody = SerenityRest.lastResponse().getBody().asString();
+        logger.debug("Response body for not found booking: {}", responseBody);
+        
+        if (SerenityRest.lastResponse().getStatusCode() == 404) {
+            // Verify the error message indicates booking not found
+            assertTrue("Response should contain 'not found' message", 
+                responseBody.toLowerCase().contains("not found") || 
+                responseBody.toLowerCase().contains("no booking"));
+            logger.info("Successfully validated booking not found message");
+        } else {
+            logger.error("Expected 404 status code but got: {}", SerenityRest.lastResponse().getStatusCode());
+            fail("Expected 404 status code for invalid room id");
         }
     }
 }

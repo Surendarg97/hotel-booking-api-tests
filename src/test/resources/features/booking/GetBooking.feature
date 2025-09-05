@@ -32,3 +32,15 @@ Feature: Get Booking Details
     When I check for unavailable dates between "2025-12-01" and "2025-12-31"
     Then the response status code should be 200
     And the response should contain the list of unavailable dates
+
+  @negative
+  Scenario: Attempt to retrieve booking with invalid room id
+    When I retrieve the booking details with room id 9999
+    Then the response status code should be 404
+    And the response should contain booking not found message
+
+  @negative
+  Scenario: Attempt to retrieve booking with invalid authentication token
+    Given I have an invalid authentication token
+    When I retrieve the booking details with room id 3
+    Then the response status code should be 403
