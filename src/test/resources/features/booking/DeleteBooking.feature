@@ -1,4 +1,4 @@
-@booking @delete
+@booking @deletebooking
 Feature: Delete Booking
   As a user of the booking system
   I want to delete existing bookings
@@ -13,3 +13,11 @@ Feature: Delete Booking
     When I delete the booking
     Then the response status code should be 200
     And the booking should be deleted successfully
+
+  @negative
+  Scenario: Attempt to delete booking with invalid token
+    Given I fetch a booking for room 2
+    And I have an invalid authentication token
+    When I delete the booking
+    Then the response status code should be 403
+    And the booking should still exist

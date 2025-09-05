@@ -48,4 +48,23 @@ public class DeleteBookingSteps {
             fail("Delete booking request failed with status code: " + SerenityRest.lastResponse().getStatusCode());
         }
     }
+    
+    @Then("the booking should still exist")
+    public void theBookingShouldStillExist() {
+        logger.info("Verifying booking still exists after failed deletion attempt");
+
+        testContext.setAuthToken(null);  // Clear the invalid token
+        AuthenticationSteps authSteps = new AuthenticationSteps();
+        authSteps.iHaveAValidAuthenticationToken();
+
+        int bookingId = testContext.getLastBookingId();
+        SerenityRest
+            .given()
+            .cookie("token", testContext.getAuthToken())
+            .when()
+            .get(BookingEndpoint.GET_BOOKING.getUrl(), bookingId);
+            
+        assertEquals("Booking should still exist", 200, SerenityRest.lastResponse().getStatusCode());
+        logger.debug("Verified booking still exists after failed deletion attempt");
+    }
 }
