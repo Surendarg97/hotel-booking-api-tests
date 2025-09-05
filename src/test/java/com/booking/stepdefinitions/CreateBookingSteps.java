@@ -31,31 +31,34 @@ public class CreateBookingSteps {
         logger.debug("API base configuration completed");
     }
 
+    private BookingRequest buildBookingRequest(Map<String, String> bookingData) {
+        BookingDates dates = BookingDates.builder()
+            .checkin(bookingData.get("checkin"))
+            .checkout(bookingData.get("checkout"))
+            .build();
+
+        BookingRequest.BookingRequestBuilder requestBuilder = BookingRequest.builder()
+            .roomid(Integer.parseInt(bookingData.get("roomid")))
+            .firstname(bookingData.get("firstname"))
+            .lastname(bookingData.get("lastname"))
+            .email(bookingData.get("email"))
+            .phone(bookingData.get("phone"))
+            .depositpaid(Boolean.parseBoolean(bookingData.get("depositpaid")))
+            .bookingdates(dates);
+
+        if (bookingData.containsKey("bookingid") && bookingData.get("bookingid") != null) {
+            requestBuilder.bookingid(Integer.parseInt(bookingData.get("bookingid")));
+        }
+
+        return requestBuilder.build();
+    }
+
     @When("I create a booking with the following details:")
     public void iCreateABookingWithTheFollowingDetails(DataTable dataTable) {
         List<Map<String, String>> bookingData = dataTable.asMaps(String.class, String.class);
         Map<String, String> booking = bookingData.get(0);
 
-        BookingDates dates = BookingDates.builder()
-            .checkin(booking.get("checkin"))
-            .checkout(booking.get("checkout"))
-            .build();
-
-        BookingRequest.BookingRequestBuilder requestBuilder = BookingRequest.builder()
-            .roomid(Integer.parseInt(booking.get("roomid")))
-            .firstname(booking.get("firstname"))
-            .lastname(booking.get("lastname"))
-            .email(booking.get("email"))
-            .phone(booking.get("phone"))
-            .depositpaid(Boolean.parseBoolean(booking.get("depositpaid")))
-            .bookingdates(dates);
-
-        // Add bookingId only if it's present in the data
-        if (booking.containsKey("bookingid") && booking.get("bookingid") != null) {
-            requestBuilder.bookingid(Integer.parseInt(booking.get("bookingid")));
-        }
-
-        BookingRequest request = requestBuilder.build();
+        BookingRequest request = buildBookingRequest(booking);
 
         logger.info("Creating booking for {} {}", request.getFirstname(), request.getLastname());
         testContext.setLastRequest(request);
