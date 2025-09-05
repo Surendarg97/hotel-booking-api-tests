@@ -27,8 +27,8 @@ Experience clarity in test execution with rich visualizations and actionable ins
 #### Feature Implementation
 Authentication, Create, Retrieve, Update, Delete Booking
 - [x] Feature file creation
-- [ ] Step definitions implementation
-- [ ] Validation for successful booking
+- [x] Step definitions implementation
+- [x] Validation for successful booking
 - [ ] Negative scenarios
 
 #### Documentation and Maintenance
