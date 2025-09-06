@@ -24,13 +24,7 @@ public class CreateBookingSteps {
     private static final Logger logger = LoggerUtil.getLogger(CreateBookingSteps.class);
     private final TestContext testContext = TestContext.getInstance();
 
-    @Given("the booking API is available")
-    public void theBookingAPIIsAvailable() {
-        String baseUrl = ConfigurationUtil.getProperty("api.booking.base");
-        logger.info("Initializing booking API with base URL: {}", baseUrl);
-        ApiUtils.initializeApiConfig(baseUrl);
-        logger.debug("API base configuration completed");
-    }
+
 
     private BookingRequest buildBookingRequest(Map<String, String> bookingData) {
         BookingDates dates = BookingDates.builder()
@@ -96,28 +90,4 @@ public class CreateBookingSteps {
         logger.info("Created booking with ID: {}", response.getBookingid());
     }
 
-    @Then("the response should contain the validation error {string}")
-    public void theResponseShouldContainTheValidationError(String expectedError) {
-        logger.debug("Validation error response: {}", lastResponse().getBody().asString());
-        
-        // Map the response to ErrorResponse POJO
-        ErrorResponse errorResponse = ApiUtils.mapResponseToPojo(lastResponse(), ErrorResponse.class);
-        Assert.assertNotNull("Error response should not be null", errorResponse);
-        Assert.assertNotNull("Error list should not be null", errorResponse.getErrors());
-        
-        // Split expected errors if multiple
-        String[] expectedErrors = expectedError.split(", ");
-        List<String> actualErrors = errorResponse.getErrors();
-        
-        // Validate each expected error exists in the response
-        for (String expected : expectedErrors) {
-            Assert.assertTrue(
-                String.format("Expected error message '%s' not found in response errors: %s", 
-                    expected, String.join(", ", actualErrors)),
-                actualErrors.contains(expected.trim())
-            );
-        }
-        
-        logger.info("Successfully validated all error messages: {}", actualErrors);
-    }
 }

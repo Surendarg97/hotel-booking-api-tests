@@ -4,13 +4,10 @@ import com.booking.pojo.BookingSummaries;
 import com.booking.pojo.UnavailableRoom;
 import com.booking.utils.TestContext;
 import com.booking.pojo.BookingRequest;
-import com.booking.pojo.BookingDates;
 import com.booking.utils.ApiUtils;
 import com.booking.enums.BookingEndpoint;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
-import io.cucumber.datatable.DataTable;
 import net.serenitybdd.rest.SerenityRest;
 import org.slf4j.Logger;
 import com.booking.utils.LoggerUtil;
@@ -20,42 +17,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.List;
 
 public class GetBookingSteps {
     private static final Logger logger = LoggerUtil.getLogger(GetBookingSteps.class);
     private final TestContext testContext = TestContext.getInstance();
-
-    @Given("a booking exists with the following details:")
-    public void aBookingExistsWithTheFollowingDetails(DataTable dataTable) {
-        List<Map<String, String>> bookingData = dataTable.asMaps(String.class, String.class);
-        Map<String, String> booking = bookingData.get(0);
-
-        BookingDates dates = BookingDates.builder()
-            .checkin(booking.get("checkin"))
-            .checkout(booking.get("checkout"))
-            .build();
-
-        BookingRequest request = BookingRequest.builder()
-            .roomid(Integer.parseInt(booking.get("roomid")))
-            .bookingid(Integer.parseInt(booking.get("bookingid")))
-            .firstname(booking.get("firstname"))
-            .lastname(booking.get("lastname"))
-            .depositpaid(Boolean.parseBoolean(booking.get("depositpaid")))
-            .email(booking.get("email"))
-            .phone(booking.get("phone"))
-            .bookingdates(dates)
-            .build();
-
-        // Create the booking first
-        SerenityRest
-            .given()
-            .contentType("application/json")
-            .body(request)
-            .when()
-            .post(BookingEndpoint.CREATE_BOOKING.getUrl());
-    }
 
     @When("I retrieve the booking details with booking id")
     public void iRetrieveTheBookingDetails() {

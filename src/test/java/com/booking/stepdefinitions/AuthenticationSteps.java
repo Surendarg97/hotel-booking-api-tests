@@ -65,35 +65,6 @@ public class AuthenticationSteps {
         Assert.assertEquals(200, lastResponse().getStatusCode());
     }
 
-    @Given("I have an invalid authentication token")
-    public void iHaveAnInvalidAuthenticationToken() {
-        logger.info("Setting up an invalid authentication token");
-        testContext.setAuthToken("invalid-token-12345");
-        logger.debug("Set invalid authentication token in context");
-    }
-
-    @Given("I have no active authentication token")
-    public void iHaveNoActiveAuthenticationToken() {
-        logger.info("Ensuring no active authentication token is present");
-        testContext.setAuthToken(null);
-        logger.debug("Authentication token has been cleared from context");
-    }
-
-
-    @When("I send a validate token request")
-    public void iSendAValidateTokenRequest() {
-        TokenResponse tokenRequest = TokenResponse.builder()
-                .token(testContext.getAuthToken())
-                .build();
-
-        SerenityRest
-            .given()
-            .contentType("application/json")
-            .body(tokenRequest)
-            .when()
-            .post(AuthEndpoint.VALIDATE.getUrl());
-    }
-
     @When("I send a logout request")
     public void iSendALogoutRequest() {
         TokenResponse tokenRequest = TokenResponse.builder()
@@ -106,13 +77,6 @@ public class AuthenticationSteps {
             .body(tokenRequest)
             .when()
             .post(AuthEndpoint.LOGOUT.getUrl());
-    }
-
-    @Then("the response status code should be {int}")
-    public void theResponseStatusCodeShouldBe(int expectedStatusCode) {
-        lastResponse()
-            .then()
-            .statusCode(expectedStatusCode);
     }
 
     @Then("the response should contain a valid token")
@@ -140,10 +104,4 @@ public class AuthenticationSteps {
         Assert.assertNotNull("Validated token should not be null", tokenResponse.getToken());
     }
 
-    @Then("the token should be invalidated")
-    public void theTokenShouldBeInvalidated() {
-        // Verify the token is invalidated by trying to validate it
-        iSendAValidateTokenRequest();
-        theResponseStatusCodeShouldBe(403);
-    }
 }

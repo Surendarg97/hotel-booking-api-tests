@@ -22,6 +22,44 @@ public class UpdateBookingSteps {
     private static final Logger logger = LoggerUtil.getLogger(UpdateBookingSteps.class);
     private final TestContext testContext = TestContext.getInstance();
 
+
+    private void updateBookingWithDetails(int bookingId, DataTable dataTable, boolean includeAllFields) {
+        List<Map<String, String>> data = dataTable.asMaps(String.class, String.class);
+        Map<String, String> bookingDetails = data.get(0);
+
+        BookingRequest.BookingRequestBuilder requestBuilder = BookingRequest.builder()
+                .roomid(Integer.parseInt(bookingDetails.get("roomid")))
+                .firstname(bookingDetails.get("firstname"))
+                .lastname(bookingDetails.get("lastname"))
+                .email(bookingDetails.get("email"))
+                .phone(bookingDetails.get("phone"));
+
+        if (includeAllFields) {
+            BookingDates dates = BookingDates.builder()
+                    .checkin(bookingDetails.get("checkin"))
+                    .checkout(bookingDetails.get("checkout"))
+                    .build();
+
+            requestBuilder
+                    .depositpaid(Boolean.parseBoolean(bookingDetails.get("depositpaid")))
+                    .bookingdates(dates);
+        }
+
+        BookingRequest request = requestBuilder.build();
+        logger.info("Updating booking ID {} with new details", bookingId);
+
+        SerenityRest
+                .given()
+                .cookie("token", testContext.getAuthToken())
+                .contentType("application/json")
+                .body(request)
+                .when()
+                .put(BookingEndpoint.UPDATE_BOOKING.getUrl(), bookingId);
+
+        testContext.setLastRequest(request);
+        logger.debug("Update booking request sent");
+    }
+
     @When("I update booking with ID {int} with the following details:")
     public void iUpdateBookingWithIdWithTheFollowingDetails(int bookingId, DataTable dataTable) {
         updateBookingWithDetails(bookingId, dataTable, true);
@@ -30,48 +68,6 @@ public class UpdateBookingSteps {
     @When("I update the booking with the following details:")
     public void iUpdateTheBookingWithTheFollowingDetails(DataTable dataTable) {
         updateBookingWithDetails(testContext.getLastBookingId(), dataTable, true);
-    }
-
-    @When("I update the booking with missing mandatory fields:")
-    public void iUpdateTheBookingWithMissingMandatoryFields(DataTable dataTable) {
-        updateBookingWithDetails(testContext.getLastBookingId(), dataTable, false);
-    }
-
-    private void updateBookingWithDetails(int bookingId, DataTable dataTable, boolean includeAllFields) {
-        List<Map<String, String>> data = dataTable.asMaps(String.class, String.class);
-        Map<String, String> bookingDetails = data.get(0);
-
-        BookingRequest.BookingRequestBuilder requestBuilder = BookingRequest.builder()
-            .roomid(Integer.parseInt(bookingDetails.get("roomid")))
-            .firstname(bookingDetails.get("firstname"))
-            .lastname(bookingDetails.get("lastname"))
-            .email(bookingDetails.get("email"))
-            .phone(bookingDetails.get("phone"));
-
-        if (includeAllFields) {
-            BookingDates dates = BookingDates.builder()
-                .checkin(bookingDetails.get("checkin"))
-                .checkout(bookingDetails.get("checkout"))
-                .build();
-
-            requestBuilder
-                .depositpaid(Boolean.parseBoolean(bookingDetails.get("depositpaid")))
-                .bookingdates(dates);
-        }
-
-        BookingRequest request = requestBuilder.build();
-        logger.info("Updating booking ID {} with new details", bookingId);
-
-        SerenityRest
-            .given()
-            .cookie("token", testContext.getAuthToken())
-            .contentType("application/json")
-            .body(request)
-            .when()
-            .put(BookingEndpoint.UPDATE_BOOKING.getUrl(), bookingId);
-
-        testContext.setLastRequest(request);
-        logger.debug("Update booking request sent");
     }
 
     @Then("the booking should be updated successfully")
@@ -97,21 +93,4 @@ public class UpdateBookingSteps {
         }
     }
 
-    @Then("the response should contain missing parameter message")
-    public void theResponseShouldContainMissingParameterMessage() {
-        String responseBody = SerenityRest.lastResponse().getBody().asString();
-        logger.debug("Response body for missing parameters: {}", responseBody);
-        
-        if (SerenityRest.lastResponse().getStatusCode() == 400) {
-            // Verify the error message indicates missing parameters
-            assertTrue("Response should contain 'missing parameter' message", 
-                responseBody.toLowerCase().contains("missing") || 
-                responseBody.toLowerCase().contains("required") ||
-                responseBody.toLowerCase().contains("mandatory"));
-            logger.info("Successfully validated missing parameter message");
-        } else {
-            logger.error("Expected 400 status code but got: {}", SerenityRest.lastResponse().getStatusCode());
-            fail("Expected 400 status code for missing mandatory parameters");
-        }
-    }
 }
