@@ -17,6 +17,31 @@ A BDD-based API testing framework for hotel booking system, built with Serenity 
 - Lombok (Reducing Boilerplate)
 - SLF4J with Logback (Logging)
 
+### Why Serenity REST with BDD and REST Assured?
+
+Serenity REST is used alongside BDD and REST Assured for several key benefits:
+
+1. **Enhanced Reporting**
+   - Provides detailed, living documentation of API tests
+   - Captures request/response details automatically
+   - Generates comprehensive HTML reports with step-by-step test execution
+
+2. **Better Integration**
+   - Seamlessly integrates with Cucumber for BDD
+   - Wraps and extends REST Assured functionality
+   - Simplifies test maintenance with built-in assertions
+
+3. **Built-in Features**
+   - Automatic session management
+   - Request/response logging out of the box
+   - Screenshots and error capture
+   - Test history tracking
+
+4. **Structured Approach**
+   - Encourages organized test architecture
+   - Supports modular test design
+   - Facilitates test reuse and maintenance
+
 ### Key Features
 - BDD-style test scenarios
 - Detailed HTML test reports
