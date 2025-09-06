@@ -8,32 +8,48 @@ Feature: Booking API Schema Validation
     Given the booking API is available
 
   @smoke @create
-  Scenario: Validate create booking response schema
+  Scenario Outline: Validate create booking response schema
     When I create a booking with the following details:
-      | roomid | bookingid | firstname | lastname | depositpaid | email            | phone         | checkin    | checkout   |
-      | 3   | 201      | Mary      | Nar      | false      | Mary@test.com    | 016583781545  | 2025-12-01 | 2025-12-05 |
-    Then the response status code should be 200
+      | roomid    | bookingid    | firstname   | lastname   | depositpaid   | email   | phone   | checkin   | checkout   |
+      | <roomId>  | <bookingId>  | <firstname> | <lastname> | <depositpaid> | <email> | <phone> | <checkin> | <checkout> |
+    Then the response status code should be <statusCode>
     And the create booking response schema should be valid
 
+    Examples:
+      | roomId | bookingId | firstname | lastname | depositpaid | email         | phone        | checkin    | checkout   | statusCode |
+      | 3      | 201       | Mary      | Nar      | false      | Mary@test.com | 016583781545 | 2025-12-01 | 2025-12-05 | 200       |
+
   @smoke @get
-  Scenario: Validate get booking response schema
-    Given a booking exists is available for room 2
-    When I retrieve the booking details with room id 2
-    Then the response status code should be 200
+  Scenario Outline: Validate get booking response schema
+    Given a booking exists is available for room <roomId>
+    When I retrieve the booking details with room id <roomId>
+    Then the response status code should be <statusCode>
     And the get booking response schema should be valid
 
+    Examples:
+      | roomId | statusCode |
+      | 2      | 200       |
+
   @smoke @update
-  Scenario: Validate update booking response schema
-    Given a booking exists is available for room 1
+  Scenario Outline: Validate update booking response schema
+    Given a booking exists is available for room <roomId>
     When I update the booking with the following details:
-      | roomid |  firstname | lastname | depositpaid | email            | phone         | checkin    | checkout   |
-      | 1      |  win      | dune   | false        | sine@test.com    | 34564554567556  | 2025-11-09 | 2025-11-15 |
-    Then the response status code should be 200
+      | roomid    | firstname   | lastname   | depositpaid   | email   | phone   | checkin   | checkout   |
+      | <roomId>  | <firstname> | <lastname> | <depositpaid> | <email> | <phone> | <checkin> | <checkout> |
+    Then the response status code should be <statusCode>
     And the update booking response schema should be valid
 
+    Examples:
+      | roomId | firstname | lastname | depositpaid | email         | phone          | checkin    | checkout   | statusCode |
+      | 1      | win       | dune     | false      | sine@test.com | 34564554567556 | 2025-11-09 | 2025-11-15 | 200       |
+
   @smoke @delete
-  Scenario: Validate delete booking response schema
-    Given a booking exists is available for room 3
+  Scenario Outline: Validate delete booking response schema
+    Given a booking exists is available for room <roomId>
     When I delete the booking
-    Then the response status code should be 200
+    Then the response status code should be <statusCode>
     And the delete booking response schema should be valid
+
+    Examples:
+      | roomId | statusCode |
+      | 3      | 200       |
