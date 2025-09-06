@@ -1,4 +1,4 @@
-@schema-validation @booking
+@schema @booking
 Feature: Booking API Schema Validation
   As a QA Engineer
   I want to verify the API response schemas

@@ -1,4 +1,4 @@
-@authenticationfeature
+@authentication
 Feature: Authentication API Endpoints
   As a user of the booking system
   I want to manage authentication

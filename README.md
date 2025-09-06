@@ -31,17 +31,38 @@ A BDD-based API testing framework for hotel booking system, built with Serenity 
 src/test/
 ├── java/
 │   └── com/booking/
-│       ├── enums/         # API endpoints
-│       ├── pojo/          # Request/Response objects
-│       ├── stepdefs/      # Step definitions
-│       └── utils/         # Helper classes
+│       ├── enums/             # API endpoints
+│       ├── pojo/              # Request/Response POJOs
+│       ├── hooks/             # Test hooks for setup/teardown
+│       ├── runner/            # Test runner configuration
+│       ├── stepdefinitions/   # Step definitions
+│       └── utils/             # Helper utilities and common functions
 └── resources/
-    ├── features/          # Cucumber feature files
-    ├── schemas/           # JSON schemas
-    ├── config.properties  # Configuration
-    └── serenity.conf     # Serenity settings
+    ├── features/
+    │   ├── authentication/    # Authentication feature files
+    │   ├── booking/           # Booking management features
+    │   └── schema/            # Schema validation features
+    ├── schemas/
+    │   ├── auth/              # Authentication API schemas
+    │   └── booking/           # Booking API schemas
+    ├── serenity.conf          # Serenity configuration
+    ├── config.properties      # Application configuration
+    └── logback.xml            # Logging configuration
+
 ```
 
+### Serenity Reports
+HTML reports are generated at:
+```
+target/site/serenity/index.html
+```
+
+### Log Files
+```
+target/logs/
+├── test-execution.log  # Test execution logs
+└── api-requests.log    # API request/response logs
+```
 ## Test Execution
 
 ### Running All Tests
@@ -70,6 +91,9 @@ mvn clean verify -Dcucumber.filter.tags="@booking and @create"
 - `@negative`: Error scenarios
 - `@booking`: All booking related tests
 - `@authentication`: Authentication tests
+- `@schema`: Schema validation tests
+- `@create`, `@get`, `@update`, `@delete`: Specific operation tests
+- `@regression`: End-to-end flows
 
 ## Test Reports & Logs
 

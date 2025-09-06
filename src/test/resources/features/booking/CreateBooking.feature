@@ -1,4 +1,4 @@
-@booking
+@booking @create
 Feature: Create Booking Functionality
   As a user of the booking system
   I want to create hotel bookings

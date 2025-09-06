@@ -1,4 +1,4 @@
-@booking @update @test
+@booking @update
 Feature: Update Booking Details
   As a user of the booking system
   I want to update existing bookings

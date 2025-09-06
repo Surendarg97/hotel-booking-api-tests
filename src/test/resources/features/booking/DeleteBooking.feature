@@ -1,4 +1,4 @@
-@booking @deletebooking
+@booking @delete
 Feature: Delete Booking
   As a user of the booking system
   I want to delete existing bookings
