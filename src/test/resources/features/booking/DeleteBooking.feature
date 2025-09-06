@@ -21,3 +21,10 @@ Feature: Delete Booking
     When I delete the booking
     Then the response status code should be 403
     And the booking should still exist
+
+  @negative
+  Scenario: Attempt to delete a non-existent booking
+    Given I have a non-existent booking ID 99999
+    When I delete the booking
+    Then the response status code should be 404
+    And the response should contain the validation error "Booking not found"
