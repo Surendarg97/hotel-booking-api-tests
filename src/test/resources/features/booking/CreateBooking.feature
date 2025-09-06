@@ -25,9 +25,20 @@ Feature: Create Booking Functionality
     And the response should contain the validation error "<expectedError>"
 
     Examples:
-      | firstname | lastname | depositpaid | email             | phone        | checkin    | checkout   | roomid | expectedError                               |
-      |          | Smith    | true        | john@test.com     | 1234567890   | 2025-09-08 | 2025-09-10 | 1      | Firstname should not be blank               |
-      | Jo       | Smith    | true        | john@test.com     | 1234567890   | 2025-09-08 | 2025-09-10 | 1      | size must be between 3 and 18              |
-      | John     | Smith    | true        | invalid-email     | 1234567890   | 2025-09-08 | 2025-09-10 | 1      | must be a well-formed email address        |
-      | John     | Smith    | true        | john@test.com     | 1234567890   | 2020-09-08 | 2020-09-10 | 1      | Invalid booking dates                       |
-      | John     | Smith    | true        | john@test.com     | 1234567890   | 2025-09-08 | 2025-09-10 | 0      | must be greater than or equal to 1         |
+      | firstname | lastname | depositpaid | email                | phone           | checkin    | checkout   | roomid | expectedError                                              |
+      |          | Johnson  | true        | alice@example.com    | 987654321046     | 2025-09-15 | 2025-09-20 | 2      | Firstname should not be blank                              |
+      | Al       | Kennedy  | true        | bob@example.com      | 876543210934     | 2025-09-16 | 2025-09-21 | 3      | size must be between 3 and 18                              |
+      | Robert   | @123     | true        | carol@example.com    | 765432109826     | 2025-09-17 | 2025-09-22 | 4      | Lastname should be a valid string                          |
+      | $James   | Wilson   | true        | david@example.com    | 654321098752     | 2025-09-18 | 2025-09-23 | 5      | Firstname should be a valid string                         |
+      | Peter    |          | true        | emma@example.com     | 543210987624     | 2025-09-19 | 2025-09-24 | 6      | Lastname should not be blank                               |
+      | Michael  | Brown    | true        | invalid.email        | 432109876526     | 2025-09-20 | 2025-09-25 | 7      | must be a well-formed email address                        |
+      | William  | Davis    | true        | frank@example.com    | 12345            | 2025-09-21 | 2025-09-26 | 8      | size must be between 11 and 21                             |
+      | Thomas   | Miller   |             | grace@example.com    | 321098765475     | 2025-09-22 | 2025-09-27 | 9      | Depositpaid should not be blank                            |
+      | Richard  | Clark    | true        |                      | 210987654383     | 2025-09-23 | 2025-09-28 | 10     | Failed to create booking                                   |
+      | Charles  | White    | true        | henry@example.com    |                  | 2025-09-24 | 2025-09-29 | 11     | Failed to create booking                                   |
+      | Joseph   | Moore    | true        | isaac@example.com    | 987654321085     |            | 2025-09-30 | 12     | must not be null                                           |
+      | Daniel   | Taylor   | true        | jack@example.com     | 876543210921     | 2025-09-25 |            | 13     | must not be null                                           |
+      | Paul     | Anderson | true        | karen@example.com    | 765432109896     | 2020-09-26 | 2020-09-30 | 14     | Invalid booking dates                                      |
+      | George   | Jackson  | true        | laura@example.com    | 654321098738     | 2025-09-27 | 2025-09-26 | 15     | Checkout date must be after checkin date                   |
+      | Edward   | Harris   | true        | mark@example.com     | 543210987692     | 2025-09-28 | 2025-09-29 | 0      | must be greater than or equal to 1                         |
+      |          |          | true        | noah@example.com     | 432109876502     | 2025-09-29 | 2025-09-30 | 16     | Firstname should not be blank, Lastname should not be blank|

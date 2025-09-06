@@ -3,6 +3,7 @@ package com.booking.stepdefinitions;
 import com.booking.pojo.BookingDates;
 import com.booking.pojo.BookingRequest;
 import com.booking.pojo.BookingResponse;
+import com.booking.pojo.ErrorResponse;
 import com.booking.utils.TestContext;
 import com.booking.enums.BookingEndpoint;
 import com.booking.utils.ApiUtils;
@@ -97,13 +98,26 @@ public class CreateBookingSteps {
 
     @Then("the response should contain the validation error {string}")
     public void theResponseShouldContainTheValidationError(String expectedError) {
-        String responseBody = lastResponse().getBody().asString();
-        logger.debug("Validation error response: {}", responseBody);
+        logger.debug("Validation error response: {}", lastResponse().getBody().asString());
         
-        Assert.assertTrue(
-            String.format("Response should contain validation error: %s", expectedError),
-            responseBody.contains(expectedError)
-        );
-        logger.info("Successfully validated error message: {}", expectedError);
+        // Map the response to ErrorResponse POJO
+        ErrorResponse errorResponse = ApiUtils.mapResponseToPojo(lastResponse(), ErrorResponse.class);
+        Assert.assertNotNull("Error response should not be null", errorResponse);
+        Assert.assertNotNull("Error list should not be null", errorResponse.getErrors());
+        
+        // Split expected errors if multiple
+        String[] expectedErrors = expectedError.split(", ");
+        List<String> actualErrors = errorResponse.getErrors();
+        
+        // Validate each expected error exists in the response
+        for (String expected : expectedErrors) {
+            Assert.assertTrue(
+                String.format("Expected error message '%s' not found in response errors: %s", 
+                    expected, String.join(", ", actualErrors)),
+                actualErrors.contains(expected.trim())
+            );
+        }
+        
+        logger.info("Successfully validated all error messages: {}", actualErrors);
     }
 }
